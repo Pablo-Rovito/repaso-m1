@@ -7,7 +7,7 @@
 // Leer lo que nos llega por consola!! Tanto errores como console.log() para darse cuenta que esta bien o que esta mal.
 
 // Importamos las clases:
-const { Queue, LinkedList, BinarySearchTree } = require('./DataStructures.js');
+const { Queue, LinkedList, BinarySearchTree } = require("./DataStructures.js");
 
 // Se incluyen los siguientes metodos para las estructuras de datos importadas.
 // QUEUE -- enqueue -- dequeue -- size -- isEmpty
@@ -28,11 +28,35 @@ const { Queue, LinkedList, BinarySearchTree } = require('./DataStructures.js');
 // search(value) ---> Devuelve la posicion del nodo con el valor recibido por parametro, contando desde 0.
 // myLinkedList.search(16) ---> devuelve 2.
 
-LinkedList.prototype.getHead = function () {};
+LinkedList.prototype.getHead = function () {
+  return this.head.value;
+};
 
-LinkedList.prototype.getTail = function () {};
+LinkedList.prototype.getTail = function () {
+  let pointer = this.head;
+  while (pointer.next !== null) {
+    pointer = pointer.next;
+  }
+  return pointer.value;
+};
 
-LinkedList.prototype.search = function (value) {};
+LinkedList.prototype.search = function (value) {
+  let count = 0;
+  let pointer = this.head;
+  while (pointer.next !== null) {
+    if (pointer.value === value) {
+      return count;
+    } else {
+      pointer = pointer.next;
+      count++;
+    }
+  }
+  if (pointer.value === value) {
+    return count;
+  } else {
+    return "No se encontró";
+  }
+};
 
 /*****************************************************************/
 /*************************** Recursion ***************************/
@@ -45,7 +69,17 @@ LinkedList.prototype.search = function (value) {};
 // Palindromo es una expresion que se lee igual de derecha a izquierda o viceversa.
 // Ejemplo de numeros palindromos: 1001, 252, 2001, 2222, 9889.
 
-function isPalindrome(number) {}
+function isPalindrome(number) {
+  if (number > 99 && Number.isInteger(number)) {
+    let strNum = number.toString(10);
+    for (let i = 0; i < Math.floor(strNum.length / 2); i++) {
+      if (strNum[i] !== strNum[strNum.length - 1 - i]) return false;
+    }
+    return true;
+  } else {
+    return null;
+  }
+}
 
 /*****************************************************************/
 /*********************** Recursion y Stack ***********************/
@@ -64,8 +98,23 @@ function isPalindrome(number) {}
 // 3
 // 2
 // 1
+Queue.prototype.reverseStack = function () {
+  if (this.isEmpty()) return null;
+  if (this.size() === 1) return this;
 
-Queue.prototype.reverseStack = function () {};
+  let aux = this.dequeue();
+  while (aux !== undefined) {
+    return this.reverseStack().enqueue(aux);
+  }
+  return this;
+};
+
+let q = new Queue();
+q.enqueue(1);
+q.enqueue(2);
+q.enqueue(3);
+q.enqueue(4);
+q.reverseStack();
 
 /*****************************************************************/
 /**************************** Closures ***************************/
@@ -80,7 +129,12 @@ Queue.prototype.reverseStack = function () {};
 // Si vuelvo a llamar a growUp(), deberia devolver "Pepe tiene ahora 30 años."
 // Y asi consecutivamente...
 
-function growUp() {}
+function growUp() {
+  edad = 28;
+  return (function () {
+    return `Pepe tiene ahora ${++edad} años`;
+  })();
+}
 
 /*****************************************************************/
 /****************************** BST ******************************/
@@ -93,7 +147,17 @@ function growUp() {}
 // Si se nos presenta un arbol como el que se encuentra en el archivo BST.png
 // la funcion deberia retornar [1, 5, 14].
 
-BinarySearchTree.prototype.getLeafs = function () {};
+BinarySearchTree.prototype.getLeafs = function (arr) {
+  if (arr === undefined) {
+    arr = [];
+  }
+  this.left?.getLeafs(arr);
+  this.right?.getLeafs(arr);
+  if (!this.left && !this.right) {
+    arr.push(this.value);
+  }
+  return arr;
+};
 
 /*****************************************************************/
 /***************************** QUEUE *****************************/
@@ -106,7 +170,11 @@ BinarySearchTree.prototype.getLeafs = function () {};
 // Por ejemplo: [1, 2, 3, 4, 5, 6] --> [];
 // HINT: usar el metodo .isEmpty() de la clase Queue ya implementada.
 
-Queue.prototype.clearAll = function () {};
+Queue.prototype.clearAll = function () {
+  while (!this.isEmpty()) {
+    this.dequeue();
+  }
+};
 
 /*****************************************************************/
 /***************************** SORT ******************************/
@@ -186,7 +254,27 @@ Queue.prototype.clearAll = function () {};
 //     },
 // ];
 
-function sortByDni(obj) {}
+// function sortByDni(obj) {
+//   obj.sort(function(a, b) {
+//     return a.dni - b.dni;
+//   });
+// }
+
+function sortByDni(obj) {
+  let swap = true;
+  while (swap) {
+    swap = false;
+    for (let i = 1; i < obj.length; i++) {
+      if (obj[i].dni < obj[i - 1].dni) {
+        let aux = obj[i - 1];
+        obj[i - 1] = obj[i];
+        obj[i] = aux;
+        swap = true;
+      }
+    }
+  }
+  return obj.reverse();
+}
 
 /*****************************************************************/
 /**************************** DESAFIO ****************************/
@@ -233,11 +321,11 @@ function decToHex(number) {}
 
 // NO BORRAR NI TOCAR NI AGREGAR NADA DEBAJO DE ESTA LINEA!!!!!
 module.exports = {
-    Queue,
-    LinkedList,
-    BinarySearchTree,
-    isPalindrome,
-    growUp,
-    sortByDni,
-    decToHex,
+  Queue,
+  LinkedList,
+  BinarySearchTree,
+  isPalindrome,
+  growUp,
+  sortByDni,
+  decToHex,
 };
